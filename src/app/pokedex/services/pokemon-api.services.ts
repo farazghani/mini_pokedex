@@ -1,6 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 
 import { Apollo } from 'apollo-angular';
+import { Pokemon } from '../models/pokemon.model';
+import { PokemonAbility } from '../models/pokemon-ability.model';
+
 
 import {
   Observable,
@@ -22,8 +25,6 @@ import {
   PokemonQueryResponse,
 } from '../models/graphql.model';
 
-import { Pokemon } from '../models/pokemon.model';
-import { PokemonAbility } from '../models/pokemon-ability.model';
 
 @Injectable({
   providedIn: 'root',
