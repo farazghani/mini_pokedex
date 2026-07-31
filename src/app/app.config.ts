@@ -6,6 +6,7 @@ import * as echarts from 'echarts/core';
 import { LineChart } from 'echarts/charts';
 import { routes } from './app.routes';
 
+import { createApollo } from './core/graphql/apollo.config';
 import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { provideApollo } from 'apollo-angular';
@@ -21,6 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideEchartsCore({ echarts }),
     provideHttpClient(),
+    provideApollo(createApollo),
     provideApollo(() => {
       const httpLink = inject(HttpLink);
 
