@@ -35,3 +35,19 @@ export interface PokemonStatGraphQL {
 export interface PokemonSpriteGraphQL {
   sprites: string;
 }
+
+export interface AbilityQueryResponse {
+  pokemon_v2_pokemonability?: AbilityGraphQL[];
+}
+
+export interface AbilityGraphQL {
+  is_hidden: boolean;
+
+  pokemon_v2_ability: {
+    name: string;
+
+    pokemon_v2_abilityeffecttexts: {
+      short_effect: string;
+    }[];
+  };
+}
