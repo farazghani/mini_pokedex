@@ -1,0 +1,34 @@
+<mat-form-field
+  appearance="outline"
+  class="search-field">
+
+  <mat-label>
+    Search Pokémon
+  </mat-label>
+
+  <input
+    matInput
+    [ngModel]="value()"
+    (ngModelChange)="onInput($event)"
+    placeholder="Bulbasaur..." />
+
+  <mat-icon matPrefix>
+    search
+  </mat-icon>
+
+  @if(value()){
+
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="clear()">
+
+      <mat-icon>
+        close
+      </mat-icon>
+
+    </button>
+
+  }
+
+</mat-form-field>

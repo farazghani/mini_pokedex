@@ -1,0 +1,23 @@
+<mat-form-field appearance="outline">
+
+    <mat-label>
+
+        Type
+
+    </mat-label>
+
+    <mat-select
+        (valueChange)="selected.emit($event)">
+        <mat-option
+            [value]="null">
+            All
+        </mat-option>
+
+        @for(type of types();track type){
+        <mat-option
+            [value]="type">
+            {{type}}
+        </mat-option>
+        }
+    </mat-select>
+</mat-form-field>
