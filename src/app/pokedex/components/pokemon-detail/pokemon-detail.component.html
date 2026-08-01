@@ -1,0 +1,183 @@
+@if (pokemon(); as pokemon) {
+
+<mat-card class="pokemon-detail">
+        <button
+        mat-icon-button
+        class="close-button"
+        (click)="close()">
+
+        <mat-icon>close </mat-icon>
+         </button>
+    <div class="pokemon-header">
+        <img
+            [src]="pokemon.sprite"
+            [alt]="pokemon.name"
+            class="pokemon-image">
+        <h2>
+            {{ pokemon.name | titlecase }}
+       </h2>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <section class="pokemon-section">
+
+        <h3>
+
+            Basic Information
+
+        </h3>
+
+        <div class="info-grid">
+
+            <div>
+
+                <strong>ID</strong>
+
+                <span>#{{ pokemon.id }}</span>
+
+            </div>
+
+            <div>
+
+                <strong>Height</strong>
+
+                <span>{{ pokemon.height }}</span>
+
+            </div>
+
+            <div>
+
+                <strong>Weight</strong>
+
+                <span>{{ pokemon.weight }}</span>
+
+            </div>
+
+            <div>
+
+                <strong>Total Stats</strong>
+
+                <span>{{ totalStats() }}</span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <mat-divider></mat-divider>
+
+    <section class="pokemon-section">
+
+        <h3>
+
+            Types
+
+        </h3>
+
+        <mat-chip-set>
+
+            @for(type of pokemon.types; track type.name){
+
+                <mat-chip>
+
+                    {{ type.name }}
+
+                </mat-chip>
+
+            }
+
+        </mat-chip-set>
+
+    </section>
+
+    <mat-divider></mat-divider>
+
+    <section class="pokemon-section">
+
+        <h3>
+
+            Abilities
+
+        </h3>
+
+        <mat-chip-set>
+
+            @for(ability of pokemon.abilities ?? []; track ability.name){
+
+                <mat-chip>
+
+                    {{ ability.name }}
+
+                </mat-chip>
+
+            }
+
+        </mat-chip-set>
+
+    </section>
+
+    <mat-divider></mat-divider>
+
+    <section class="pokemon-section">
+
+        <h3>
+
+            Base Stats
+
+        </h3>
+
+        <div class="stat-row">
+
+            <span>HP</span>
+
+            <strong>{{ getStat('hp') }}</strong>
+
+        </div>
+
+        <div class="stat-row">
+
+            <span>Attack</span>
+
+            <strong>{{ getStat('attack') }}</strong>
+
+        </div>
+
+        <div class="stat-row">
+
+            <span>Defense</span>
+
+            <strong>{{ getStat('defense') }}</strong>
+
+        </div>
+
+        <div class="stat-row">
+
+            <span>Sp. Attack</span>
+
+            <strong>{{ getStat('special-attack') }}</strong>
+
+        </div>
+
+        <div class="stat-row">
+
+            <span>Sp. Defense</span>
+
+            <strong>{{ getStat('special-defense') }}</strong>
+
+        </div>
+
+        <div class="stat-row">
+
+            <span>Speed</span>
+
+            <strong>{{ getStat('speed') }}</strong>
+
+        </div>
+
+    </section>
+
+</mat-card>
+
+}
