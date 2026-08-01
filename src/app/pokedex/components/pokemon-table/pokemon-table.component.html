@@ -1,0 +1,211 @@
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading Pokémon...</p>
+  </div>
+} @else if (error()) {
+  <div class="error-container">
+    <h3>Something went wrong</h3>
+    <p>{{ error() }}</p>
+  </div>
+} @else if (pokemon().length === 0) {
+  <div class="empty-container">
+    <h3>No Pokémon Found</h3>
+    <p>Try changing your search or filters.</p>
+  </div>
+} @else {
+
+<table
+  mat-table
+  [dataSource]="pokemon()"
+  matSort
+  (matSortChange)="onSortChange($event)"
+  class="pokemon-table">
+
+  <!-- Sprite -->
+  <ng-container matColumnDef="sprite">
+    <th mat-header-cell *matHeaderCellDef>
+      Sprite
+    </th>
+
+    <td mat-cell *matCellDef="let pokemon">
+      <img
+        [src]="pokemon.sprite"
+        [alt]="pokemon.name"
+        class="pokemon-sprite">
+    </td>
+  </ng-container>
+
+  <!-- Name -->
+  <ng-container matColumnDef="name">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header>
+
+      Name
+
+    </th>
+
+    <td mat-cell *matCellDef="let pokemon">
+      {{ pokemon.name | titlecase }}
+    </td>
+  </ng-container>
+
+  <!-- Types -->
+  <ng-container matColumnDef="types">
+    <th mat-header-cell *matHeaderCellDef>
+      Types
+    </th>
+
+    <td mat-cell *matCellDef="let pokemon">
+
+      @for (type of pokemon.types; track type.name) {
+
+        <span
+          class="type-chip"
+          [class]="'type-' + type.name">
+
+          {{ type.name }}
+
+        </span>
+
+      }
+
+    </td>
+  </ng-container>
+
+  <!-- HP -->
+  <ng-container matColumnDef="hp">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header>
+
+      HP
+
+    </th>
+
+    <td mat-cell *matCellDef="let pokemon">
+      {{ getStat(pokemon,'hp') }}
+    </td>
+  </ng-container>
+
+  <!-- Attack -->
+  <ng-container matColumnDef="attack">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header>
+
+      Attack
+
+    </th>
+
+    <td mat-cell *matCellDef="let pokemon">
+      {{ getStat(pokemon,'attack') }}
+    </td>
+  </ng-container>
+
+  <!-- Defense -->
+  <ng-container matColumnDef="defense">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header>
+
+      Defense
+
+    </th>
+
+    <td mat-cell *matCellDef="let pokemon">
+      {{ getStat(pokemon,'defense') }}
+    </td>
+  </ng-container>
+
+  <!-- Special Attack -->
+  <ng-container matColumnDef="spAttack">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header>
+
+      Sp. Atk
+
+    </th>
+
+    <td mat-cell *matCellDef="let pokemon">
+      {{ getStat(pokemon,'special-attack') }}
+    </td>
+  </ng-container>
+
+  <!-- Special Defense -->
+  <ng-container matColumnDef="spDefense">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header>
+
+      Sp. Def
+
+    </th>
+
+    <td mat-cell *matCellDef="let pokemon">
+      {{ getStat(pokemon,'special-defense') }}
+    </td>
+  </ng-container>
+
+  <!-- Speed -->
+  <ng-container matColumnDef="speed">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header>
+
+      Speed
+
+    </th>
+
+    <td mat-cell *matCellDef="let pokemon">
+      {{ getStat(pokemon,'speed') }}
+    </td>
+  </ng-container>
+
+  <!-- Total -->
+  <ng-container matColumnDef="total">
+    <th mat-header-cell *matHeaderCellDef>
+      Total
+    </th>
+
+    <td mat-cell *matCellDef="let pokemon">
+
+      <strong>
+        {{ getTotal(pokemon) }}
+      </strong>
+
+    </td>
+  </ng-container>
+
+  <tr
+    mat-header-row
+    *matHeaderRowDef="displayedColumns">
+  </tr>
+
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    (click)="clickRow(row)"
+    class="pokemon-row">
+  </tr>
+
+</table>
+
+<mat-paginator
+  [length]="pokemon().length"
+  [pageSize]="10"
+  [pageSizeOptions]="[10,25,50]"
+  showFirstLastButtons
+  (page)="onPageChange($event)">
+</mat-paginator>
+
+}

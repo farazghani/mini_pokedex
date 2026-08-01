@@ -1,0 +1,171 @@
+:host {
+  display: block;
+}
+
+.pokemon-table {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+
+  .mat-mdc-header-row {
+    background: #f5f5f5;
+  }
+
+  .mat-mdc-header-cell {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #424242;
+  }
+
+  .mat-mdc-row {
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  .mat-mdc-row:hover {
+    background: rgba(25, 118, 210, 0.08);
+  }
+
+  .mat-mdc-cell,
+  .mat-mdc-header-cell {
+    padding: 14px 16px;
+  }
+}
+
+.pokemon-sprite {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.loading-container,
+.error-container,
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 3rem;
+
+  gap: 1rem;
+}
+
+.error-container {
+  color: #d32f2f;
+}
+
+.empty-container {
+  color: #616161;
+}
+
+.type-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 4px 10px;
+
+  margin-right: 6px;
+  margin-bottom: 4px;
+
+  border-radius: 999px;
+
+  color: white;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  text-transform: capitalize;
+}
+
+/* Pokemon Types */
+
+.type-normal {
+  background: #a8a77a;
+}
+
+.type-fire {
+  background: #ee8130;
+}
+
+.type-water {
+  background: #6390f0;
+}
+
+.type-electric {
+  background: #f7d02c;
+  color: black;
+}
+
+.type-grass {
+  background: #7ac74c;
+}
+
+.type-ice {
+  background: #96d9d6;
+  color: black;
+}
+
+.type-fighting {
+  background: #c22e28;
+}
+
+.type-poison {
+  background: #a33ea1;
+}
+
+.type-ground {
+  background: #e2bf65;
+  color: black;
+}
+
+.type-flying {
+  background: #a98ff3;
+}
+
+.type-psychic {
+  background: #f95587;
+}
+
+.type-bug {
+  background: #a6b91a;
+}
+
+.type-rock {
+  background: #b6a136;
+}
+
+.type-ghost {
+  background: #735797;
+}
+
+.type-dragon {
+  background: #6f35fc;
+}
+
+.type-dark {
+  background: #705746;
+}
+
+.type-steel {
+  background: #b7b7ce;
+  color: black;
+}
+
+.type-fairy {
+  background: #d685ad;
+}
+
+mat-paginator {
+  border-top: 1px solid #eeeeee;
+}
+
+@media (max-width: 1200px) {
+  .pokemon-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

@@ -1,0 +1,20 @@
+<div class="container">
+
+  <div class="card">
+
+    <header class="pokedex-page__header">
+      <h1>Mini Pokédex</h1>
+
+      <p>{{ totalPokemon() }} Pokémon Loaded</p>
+    </header>
+
+    <app-pokemon-table
+      [pokemon]="pokemon()"
+      [loading]="loading()"
+      [error]="error()"
+      (rowClicked)="onPokemonClick($event)">
+    </app-pokemon-table>
+
+  </div>
+
+</div>
