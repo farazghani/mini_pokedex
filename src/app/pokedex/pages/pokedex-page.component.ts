@@ -17,6 +17,10 @@ import { TeamSelectors } from '../../teams/state/team.selectors';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { PokemonTableComponent } from '../components/pokemon-table/pokemon-table';
+import { SearchBarComponent } from '../components/search-bar/search-bar.component';
+import { TypeFilterComponent } from '../components/type-filter/type-filter.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { PokemonDetailComponent } from '../components/pokemon-detail/pokemon-detail.component';
 
 @Component({
   selector: 'app-pokedex-page',
@@ -24,16 +28,18 @@ import { PokemonTableComponent } from '../components/pokemon-table/pokemon-table
   imports: [
     CommonModule,
     PokemonTableComponent,
+    SearchBarComponent,
+    TypeFilterComponent,
+    MatSidenavModule,
+    PokemonDetailComponent,
   ],
   templateUrl: './pokedex-page.component.html',
   styleUrl: './pokedex-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PokedexPageComponent implements OnInit {
-  // ------------------------------------------------------
-  // Services
-  // ------------------------------------------------------
 
+
+export class PokedexPageComponent implements OnInit {
   private readonly pokemonStore = inject(PokemonStore);
   private readonly pokemonSelectors = inject(PokemonSelectors);
   private readonly teamStore = inject(TeamStore);
@@ -85,17 +91,11 @@ export class PokedexPageComponent implements OnInit {
     },
   );
 
-  // ------------------------------------------------------
-  // UI Signals
-  // ------------------------------------------------------
-
+ 
   readonly drawerOpen = signal(false);
-
   readonly search = signal('');
 
-  // ------------------------------------------------------
-  // Computed Signals
-  // ------------------------------------------------------
+  
 
   readonly totalPokemon = computed(
     () => this.pokemon().length,
@@ -104,6 +104,24 @@ export class PokedexPageComponent implements OnInit {
   readonly teamCount = computed(
     () => this.teams().length,
   );
+
+readonly filteredPokemon = toSignal(
+  this.pokemonSelectors.filteredPokemon$,
+  {
+    initialValue: [],
+  },
+);
+
+
+readonly pokemonTypes = computed(() => {
+  const types = new Set<string>();
+  for (const pokemon of this.filteredPokemon()) {
+    for (const type of pokemon.types) {
+      types.add(type.name);
+    }
+  }
+  return [...types].sort();
+});
 
   // ------------------------------------------------------
   // Constructor
@@ -138,7 +156,6 @@ export class PokedexPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.pokemonStore.loadPokemon();
-
     this.teamStore.loadTeams();
   }
 
@@ -180,6 +197,10 @@ onPage(event: PageEvent): void {
     event.pageIndex,
     event.pageSize,
   );
+}
+
+onTypeChanged(type: string | null): void {
+  this.pokemonStore.setType(type);
 }
 
   trackByPokemon(

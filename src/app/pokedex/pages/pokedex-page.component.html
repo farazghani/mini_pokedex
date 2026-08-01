@@ -1,20 +1,50 @@
-<div class="container">
+<mat-drawer-container class="drawer-container">
 
-  <div class="card">
+  <mat-drawer-content>
 
-    <header class="pokedex-page__header">
-      <h1>Mini Pokédex</h1>
+    <div class="container">
 
-      <p>{{ totalPokemon() }} Pokémon Loaded</p>
-    </header>
+      <div class="card">
 
-    <app-pokemon-table
-      [pokemon]="pokemon()"
-      [loading]="loading()"
-      [error]="error()"
-      (rowClicked)="onPokemonClick($event)">
-    </app-pokemon-table>
+        <header class="toolbar">
 
-  </div>
+          <app-search-bar
+            (searchChanged)="onSearch($event)">
+          </app-search-bar>
 
-</div>
+          <app-type-filter
+            [types]="pokemonTypes()"
+            (selected)="onTypeChanged($event)">
+          </app-type-filter>
+
+        </header>
+
+        <app-pokemon-table
+          [pokemon]="pokemon()"
+          [loading]="loading()"
+          [error]="error()"
+          (rowClicked)="onPokemonClick($event)"
+          (sortChanged)="onSort($event)"
+          (pageChanged)="onPage($event)">
+        </app-pokemon-table>
+
+      </div>
+
+    </div>
+
+  </mat-drawer-content>
+
+  <mat-drawer
+    mode="side"
+    position="end"
+    [opened]="drawerOpen()"
+    class="detail-drawer">
+
+    <app-pokemon-detail
+      [pokemon]="selectedPokemon()"
+      (closed)="closeDrawer()">
+    </app-pokemon-detail>
+
+  </mat-drawer>
+
+</mat-drawer-container>
