@@ -6,11 +6,12 @@ import { provideApollo } from 'apollo-angular';
 
 import { provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts/core';
-import { LineChart } from 'echarts/charts';
+import { LineChart , RadarChart,} from 'echarts/charts';
 import {
   GridComponent,
   TooltipComponent,
   LegendComponent,
+  RadarComponent,
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 
@@ -18,6 +19,8 @@ import { routes } from './app.routes';
 import { createApollo } from './core/graphql/apollo.config';
 
 echarts.use([
+  RadarChart,
+  RadarComponent,
   LineChart,
   GridComponent,
   TooltipComponent,

@@ -12,6 +12,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { Pokemon } from '../../models/pokemon.model';
+import { PokemonRadarChartComponent } from '../pokemon-radar-chart/pokemon-radar-chart.component';
+
 
 @Component({
   selector: 'app-pokemon-detail',
@@ -22,6 +24,7 @@ import { Pokemon } from '../../models/pokemon.model';
     MatDividerModule,
     MatChipsModule,
     MatIconModule,
+    PokemonRadarChartComponent,
   ],
 
   templateUrl: './pokemon-detail.component.html',
