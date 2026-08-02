@@ -12,6 +12,16 @@ Mini Pokedex is an Angular app for browsing Pokémon and managing teams in a sep
   - one form validator
 - App runs with `ng serve` and the mock server runs on port `4000`
 
+## Screenshots
+
+Pokédex view:
+
+![Pokédex view](/Users/farazghani/Downloads/Major%20Project/Screenshot%202026-08-02%20at%2011.23.44%E2%80%AFPM.png)
+
+Teams view:
+
+![Teams view](/Users/farazghani/Downloads/Major%20Project/Screenshot%202026-08-02%20at%2011.23.52%E2%80%AFPM.png)
+
 ## Setup
 
 ### 1. Install dependencies
