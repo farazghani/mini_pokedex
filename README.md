@@ -16,11 +16,11 @@ Mini Pokedex is an Angular app for browsing Pokémon and managing teams in a sep
 
 Pokédex view:
 
-![Pokédex view](/Users/farazghani/Downloads/Major%20Project/Screenshot%202026-08-02%20at%2011.23.44%E2%80%AFPM.png)
+![Pokédex view](screenshot/Screenshot%202026-08-02%20at%2011.23.44%E2%80%AFPM.png)
 
 Teams view:
 
-![Teams view](/Users/farazghani/Downloads/Major%20Project/Screenshot%202026-08-02%20at%2011.23.52%E2%80%AFPM.png)
+![Teams view](screenshot/Screenshot%202026-08-02%20at%2011.23.52%E2%80%AFPM.png)
 
 ## Setup
 
