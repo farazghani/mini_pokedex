@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+
+.async-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 160px;
+  padding: 2rem;
+  border-radius: 16px;
+  background: #f7f9fc;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.async-state-copy {
+  display: grid;
+  gap: 0.25rem;
+  max-width: 26rem;
+}
+
+.async-state-copy h3,
+.async-state-copy p {
+  margin: 0;
+}
+
+.async-state-copy p {
+  color: #5f6368;
+}
+
+.async-state-error {
+  flex-direction: column;
+  color: #b00020;
+}
+
+.async-state-empty {
+  color: #5f6368;
+}
+
+.async-state-loading {
+  color: #374151;
+}

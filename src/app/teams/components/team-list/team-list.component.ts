@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { TeamCardComponent } from '../team-card/team-card.component';
 import { Team } from '../../models/team.model';
+import { AsyncStateComponent } from '../../../common/components/async-state/async-state.component';
 
 @Component({
   selector: 'app-team-list',
@@ -18,6 +19,7 @@ import { Team } from '../../models/team.model';
     CommonModule,
     MatButtonModule,
     TeamCardComponent,
+    AsyncStateComponent,
   ],
   templateUrl: './team-list.component.html',
   styleUrl: './team-list.component.scss',
@@ -29,4 +31,10 @@ export class TeamListComponent {
   readonly teamSelected = output<number>();
   readonly teamDeleted = output<number>();
   readonly createClicked = output<void>();
+  readonly loading = input(false);
+  readonly error = input<string | null>(null);
+  readonly emptyMessage = input(
+    'Create your first team to get started.',
+  );
+  readonly retry = output<void>();
 }

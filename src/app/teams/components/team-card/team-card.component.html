@@ -24,28 +24,37 @@
 
   </div>
 
-  <div class="pokemon-grid">
+  <app-async-state
+    [loading]="pokemonLoading()"
+    [error]="pokemonError()"
+    [empty]="!pokemonLoading() && !pokemonError() && teamPokemon().length === 0"
+    loadingTitle="Loading Pokémon"
+    loadingMessage="Resolving team members from the Pokémon cache."
+    emptyTitle="No Pokémon assigned"
+    emptyMessage="This team has no Pokémon yet."
+    errorTitle="Pokémon unavailable"
+    errorMessage="We could not load Pokémon details for this team."
+    retryLabel="Retry"
+    (retry)="retryPokemonLoad()">
 
-    @for (pokemon of teamPokemon(); track pokemon.id) {
+    <div class="pokemon-grid">
 
-      <div class="pokemon">
+      @for (pokemon of teamPokemon(); track pokemon.id) {
 
-        <img
-          [src]="pokemon.sprite"
-          [alt]="pokemon.name">
+        <div class="pokemon">
 
-        <span>{{ pokemon.name }}</span>
+          <img
+            [src]="pokemon.sprite"
+            [alt]="pokemon.name">
 
-      </div>
+          <span>{{ pokemon.name }}</span>
 
-    }
+        </div>
 
-    @if (teamPokemon().length === 0) {
-      <p class="empty-state">
-        Pokémon data is still loading.
-      </p>
-    }
+      }
 
-  </div>
+    </div>
+
+  </app-async-state>
 
 </article>

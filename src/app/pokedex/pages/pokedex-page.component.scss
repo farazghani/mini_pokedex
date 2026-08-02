@@ -1,5 +1,6 @@
 .drawer-container{
-height:100vh;
+height:100%;
+min-height:0;
 }
 
 .detail-drawer{
@@ -29,6 +30,7 @@ align-items:center;
 .container{
 
 padding:2rem;
+min-height:0;
 
 }
 

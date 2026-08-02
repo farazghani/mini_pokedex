@@ -1,13 +1,8 @@
-@if (teams$ | async; as teams) {
-
-  <app-team-list
-
-    [teams]="teams"
-
-    (createClicked)="createTeam()"
-
-    (teamDeleted)="deleteTeam($event)">
-
-  </app-team-list>
-
-}
+<app-team-list
+  [teams]="teams()"
+  [loading]="loading()"
+  [error]="error()"
+  (retry)="reloadTeams()"
+  (createClicked)="createTeam()"
+  (teamDeleted)="deleteTeam($event)">
+</app-team-list>

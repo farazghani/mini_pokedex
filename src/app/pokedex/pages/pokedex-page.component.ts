@@ -9,20 +9,16 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { PokemonStore } from '../state/pokemon.store';
-import { PokemonSelectors } from '../state/pokemon.selectors';
-import { TeamStore } from '../../teams/state/team.store';
-import { TeamSelectors } from '../../teams/state/team.selectors';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
+import { MatSidenavModule } from '@angular/material/sidenav';
+
+import { PokemonStore } from '../state/pokemon.store';
+import { PokemonSelectors } from '../state/pokemon.selectors';
 import { PokemonTableComponent } from '../components/pokemon-table/pokemon-table';
 import { SearchBarComponent } from '../components/search-bar/search-bar.component';
 import { TypeFilterComponent } from '../components/type-filter/type-filter.component';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { PokemonDetailComponent } from '../components/pokemon-detail/pokemon-detail.component';
-import { MatDialog } from '@angular/material/dialog';
-import { TeamDialogComponent } from '../../teams/components/team-dialog/team-dialog.component';
-import { TeamListComponent } from '../../teams/components/team-list/team-list.component';
 
 @Component({
   selector: 'app-pokedex-page',
@@ -34,142 +30,64 @@ import { TeamListComponent } from '../../teams/components/team-list/team-list.co
     TypeFilterComponent,
     MatSidenavModule,
     PokemonDetailComponent,
-    TeamListComponent,
   ],
   templateUrl: './pokedex-page.component.html',
   styleUrl: './pokedex-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
-
 export class PokedexPageComponent implements OnInit {
   private readonly pokemonStore = inject(PokemonStore);
   private readonly pokemonSelectors = inject(PokemonSelectors);
-  private readonly teamStore = inject(TeamStore);
-  private readonly teamSelectors = inject(TeamSelectors);
-  private readonly dialog = inject(MatDialog);
-  // ------------------------------------------------------
-  // Observable → Signal
-  // ------------------------------------------------------
 
-  readonly pokemon = toSignal(
-    this.pokemonSelectors.pagedPokemon$,
-    {
-      initialValue: [],
-    },
-  );
+  readonly pokemon = toSignal(this.pokemonSelectors.pagedPokemon$, {
+    initialValue: [],
+  });
 
-  readonly loading = toSignal(
-    this.pokemonSelectors.loading$,
-    {
-      initialValue: false,
-    },
-  );
+  readonly loading = toSignal(this.pokemonSelectors.loading$, {
+    initialValue: false,
+  });
 
-  readonly error = toSignal(
-    this.pokemonSelectors.error$,
-    {
-      initialValue: null,
-    },
-  );
+  readonly error = toSignal(this.pokemonSelectors.error$, {
+    initialValue: null,
+  });
 
-  readonly selectedPokemon = toSignal(
-    this.pokemonSelectors.selectedPokemon$,
-    {
-      initialValue: undefined,
-    },
-  );
+  readonly selectedPokemon = toSignal(this.pokemonSelectors.selectedPokemon$, {
+    initialValue: undefined,
+  });
 
-  readonly teams = toSignal(
-    this.teamSelectors.teams$,
-    {
-      initialValue: [],
-    },
-  );
-
-  readonly selectedTeam = toSignal(
-    this.teamSelectors.selectedTeam$,
-    {
-      initialValue: undefined,
-    },
-  );
-
- 
   readonly drawerOpen = signal(false);
   readonly search = signal('');
 
-  
+  readonly totalPokemon = computed(() => this.pokemon().length);
 
-  readonly totalPokemon = computed(
-    () => this.pokemon().length,
-  );
-
-  readonly teamCount = computed(
-    () => this.teams().length,
-  );
-
-readonly filteredPokemon = toSignal(
-  this.pokemonSelectors.filteredPokemon$,
-  {
+  readonly filteredPokemon = toSignal(this.pokemonSelectors.filteredPokemon$, {
     initialValue: [],
-  },
-);
+  });
 
+  readonly pokemonTypes = computed(() => {
+    const types = new Set<string>();
 
-readonly pokemonTypes = computed(() => {
-  const types = new Set<string>();
-  for (const pokemon of this.filteredPokemon()) {
-    for (const type of pokemon.types) {
-      types.add(type.name);
+    for (const pokemon of this.filteredPokemon()) {
+      for (const type of pokemon.types) {
+        types.add(type.name);
+      }
     }
-  }
-  return [...types].sort();
-});
 
-  // ------------------------------------------------------
-  // Constructor
-  // ------------------------------------------------------
+    return [...types].sort();
+  });
 
   constructor() {
-    // Open / Close Detail Drawer
     effect(() => {
-      this.drawerOpen.set(
-        !!this.selectedPokemon(),
-      );
-    });
-
-    // Persist selected team
-    effect(() => {
-      const team = this.selectedTeam();
-
-      if (!team) {
-        localStorage.removeItem('selected-team');
-        return;
-      }
-
-      localStorage.setItem(
-        'selected-team',
-        JSON.stringify(team),
-      );
+      this.drawerOpen.set(!!this.selectedPokemon());
     });
   }
-
-  // ------------------------------------------------------
-  // Lifecycle
-  // ------------------------------------------------------
 
   ngOnInit(): void {
     this.pokemonStore.loadPokemon();
-    this.teamStore.loadTeams();
   }
-
-  // ------------------------------------------------------
-  // UI Events
-  // ------------------------------------------------------
 
   onSearch(value: string): void {
     this.search.set(value);
-
     this.pokemonStore.search(value);
   }
 
@@ -179,33 +97,24 @@ readonly pokemonTypes = computed(() => {
 
   closeDrawer(): void {
     this.drawerOpen.set(false);
-
     this.pokemonStore.setSelectedPokemon(null);
   }
-  
-  onSort(event: Sort): void {
 
-  if (!event.active || !event.direction) {
-    return;
+  onSort(event: Sort): void {
+    if (!event.active || !event.direction) {
+      return;
+    }
+
+    this.pokemonStore.setSort(event.active, event.direction);
   }
 
-  this.pokemonStore.setSort(
-    event.active,
-    event.direction,
-  );
-}
+  onPage(event: PageEvent): void {
+    this.pokemonStore.setPagination(event.pageIndex, event.pageSize);
+  }
 
-onPage(event: PageEvent): void {
-
-  this.pokemonStore.setPagination(
-    event.pageIndex,
-    event.pageSize,
-  );
-}
-
-onTypeChanged(type: string | null): void {
-  this.pokemonStore.setType(type);
-}
+  onTypeChanged(type: string | null): void {
+    this.pokemonStore.setType(type);
+  }
 
   trackByPokemon(
     index: number,
@@ -214,43 +123,7 @@ onTypeChanged(type: string | null): void {
     return pokemon.id;
   }
 
-  onTeamSelected(id: number): void {
-  this.teamStore.selectTeam(id);
-}
-
-onTeamDeleted(id: number): void {
-  this.teamStore.deleteTeam(id);
-}
-  openCreateTeamDialog(): void {
-    const dialogRef = this.dialog.open(
-      TeamDialogComponent,
-    );
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
-        return;
-      }
-
-      this.teamStore
-        .createTeam({
-          trainerId: 1,
-          name: result.name,
-          pokemonIds: [],
-          createdAt: new Date().toISOString(),
-        })
-        .subscribe({
-          next: (createdTeam) => {
-            this.teamStore.selectTeam(
-              createdTeam.id,
-            );
-          },
-          error: (error) => {
-            console.error(
-              'Unable to create team.',
-              error,
-            );
-          },
-        });
-    });
+  reloadPokemon(): void {
+    this.pokemonStore.loadPokemon();
   }
 }

@@ -1,140 +1,130 @@
-@if (pokemon(); as selectedPokemon ) {
+<app-async-state
+  [loading]="loading()"
+  [error]="error()"
+  [empty]="empty()"
+  loadingTitle="Loading Pokémon"
+  loadingMessage="Fetching the selected Pokémon."
+  emptyTitle="No Pokémon selected"
+  emptyMessage="Select a Pokémon from the table to view details."
+  errorTitle="Pokémon unavailable"
+  errorMessage="We could not load Pokémon details right now."
+  retryLabel="Retry"
+  (retry)="retry.emit()">
 
-<mat-card class="pokemon-detail">
-        <button
+  @if (pokemon(); as selectedPokemon) {
+
+    <mat-card class="pokemon-detail">
+      <button
         mat-icon-button
         class="close-button"
+        type="button"
         (click)="close()">
+        <mat-icon>close</mat-icon>
+      </button>
 
-        <mat-icon>close </mat-icon>
-         </button>
-    <div class="pokemon-header">
+      <div class="pokemon-header">
         <img
-            [src]="selectedPokemon.sprite"
-            [alt]="selectedPokemon.name"
-            class="pokemon-image">
+          [src]="selectedPokemon.sprite"
+          [alt]="selectedPokemon.name"
+          class="pokemon-image">
         <h2>
-            {{ selectedPokemon.name | titlecase }}
-       </h2>
-    </div>
+          {{ selectedPokemon.name | titlecase }}
+        </h2>
+      </div>
 
-    <mat-divider></mat-divider>
+      <mat-divider></mat-divider>
 
-<section class="pokemon-section">
-  <h3>Stat Distribution</h3>
-  <app-pokemon-radar-chart 
-   [pokemon]="pokemon()">
-  </app-pokemon-radar-chart>
+      <section class="pokemon-section">
+        <h3>Stat Distribution</h3>
+        <app-pokemon-radar-chart
+          [pokemon]="selectedPokemon">
+        </app-pokemon-radar-chart>
+      </section>
 
-</section>
-    <section class="pokemon-section">
-        <h3>  Basic Information </h3>
+      <section class="pokemon-section">
+        <h3>Basic Information</h3>
         <div class="info-grid">
-            <div>
-               <strong>ID</strong>
-                <span>#{{ selectedPokemon.id }}</span>
-            </div>
+          <div>
+            <strong>ID</strong>
+            <span>#{{ selectedPokemon.id }}</span>
+          </div>
 
-            <div>
-                <strong>Height</strong>
-                <span>{{ selectedPokemon.height }}</span>
-            </div>
+          <div>
+            <strong>Height</strong>
+            <span>{{ selectedPokemon.height }}</span>
+          </div>
 
-            <div>
-                <strong>Weight</strong>
-                <span>{{ selectedPokemon.weight }}</span>
-            </div>
+          <div>
+            <strong>Weight</strong>
+            <span>{{ selectedPokemon.weight }}</span>
+          </div>
 
-            <div>
-                <strong>Total Stats</strong>
-                <span>{{ totalStats() }}</span>
-            </div>
+          <div>
+            <strong>Total Stats</strong>
+            <span>{{ totalStats() }}</span>
+          </div>
         </div>
+      </section>
 
-    </section>
+      <mat-divider></mat-divider>
 
-    <mat-divider></mat-divider>
-
-    <section class="pokemon-section">
-
-        <h3>
-            Types
-        </h3>
-
+      <section class="pokemon-section">
+        <h3>Types</h3>
         <mat-chip-set>
-            @for(type of selectedPokemon.types; track type.name){
-                <mat-chip>
-                    {{ type.name }}
-                </mat-chip>
-            }
+          @for (type of selectedPokemon.types; track type.name) {
+            <mat-chip>{{ type.name }}</mat-chip>
+          }
         </mat-chip-set>
-    </section>
+      </section>
 
-    <mat-divider></mat-divider>
-    <section class="pokemon-section">
-        <h3>
-            Abilities
-        </h3>
+      <mat-divider></mat-divider>
 
+      <section class="pokemon-section">
+        <h3>Abilities</h3>
         <mat-chip-set>
-            @for(ability of selectedPokemon.abilities ?? []; track ability.name){
-                <mat-chip>
-                    {{ ability.name }}
-                </mat-chip>
-            }
+          @for (ability of selectedPokemon.abilities ?? []; track ability.name) {
+            <mat-chip>{{ ability.name }}</mat-chip>
+          }
         </mat-chip-set>
-    </section>
+      </section>
 
-    <mat-divider></mat-divider>
-    <section class="pokemon-section">
-        <h3>
-           Base Stats
-        </h3>
+      <mat-divider></mat-divider>
+
+      <section class="pokemon-section">
+        <h3>Base Stats</h3>
 
         <div class="stat-row">
-            <span>HP</span>
-            <strong>{{ getStat('hp') }}</strong>
+          <span>HP</span>
+          <strong>{{ getStat('hp') }}</strong>
         </div>
 
         <div class="stat-row">
-            <span>Attack</span>
-            <strong>{{ getStat('attack') }}</strong>
+          <span>Attack</span>
+          <strong>{{ getStat('attack') }}</strong>
         </div>
 
         <div class="stat-row">
-
-            <span>Defense</span>
-
-            <strong>{{ getStat('defense') }}</strong>
-
+          <span>Defense</span>
+          <strong>{{ getStat('defense') }}</strong>
         </div>
 
         <div class="stat-row">
-
-            <span>Sp. Attack</span>
-
-            <strong>{{ getStat('special-attack') }}</strong>
-
+          <span>Sp. Attack</span>
+          <strong>{{ getStat('special-attack') }}</strong>
         </div>
 
         <div class="stat-row">
-
-            <span>Sp. Defense</span>
-
-            <strong>{{ getStat('special-defense') }}</strong>
-
+          <span>Sp. Defense</span>
+          <strong>{{ getStat('special-defense') }}</strong>
         </div>
 
         <div class="stat-row">
-
-            <span>Speed</span>
-
-            <strong>{{ getStat('speed') }}</strong>
-
+          <span>Speed</span>
+          <strong>{{ getStat('speed') }}</strong>
         </div>
+      </section>
+    </mat-card>
 
-    </section>
+  }
 
-</mat-card>
-
-}
+</app-async-state>

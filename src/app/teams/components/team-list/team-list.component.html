@@ -14,11 +14,18 @@
 
 </div>
 
-@if (teams().length === 0) {
-
-  <p>No Teams Yet</p>
-
-} @else {
+<app-async-state
+  [loading]="loading()"
+  [error]="error()"
+  [empty]="teams().length === 0"
+  loadingTitle="Loading teams"
+  loadingMessage="Fetching saved teams."
+  emptyTitle="No teams yet"
+  [emptyMessage]="emptyMessage()"
+  errorTitle="Teams unavailable"
+  errorMessage="We could not load your teams right now."
+  retryLabel="Retry"
+  (retry)="retry.emit()">
 
   <div class="team-grid">
 
@@ -36,4 +43,4 @@
 
   </div>
 
-}
+</app-async-state>

@@ -1,0 +1,33 @@
+@if (loading()) {
+  <div class="async-state async-state-loading">
+    <mat-spinner diameter="44"></mat-spinner>
+    <div class="async-state-copy">
+      <h3>{{ loadingTitle() }}</h3>
+      <p>{{ loadingMessage() }}</p>
+    </div>
+  </div>
+} @else if (error()) {
+  <div class="async-state async-state-error">
+    <div class="async-state-copy">
+      <h3>{{ errorTitle() }}</h3>
+      <p>{{ errorMessage() }}</p>
+    </div>
+
+    <button
+      mat-raised-button
+      type="button"
+      color="primary"
+      (click)="retry.emit()">
+      {{ retryLabel() }}
+    </button>
+  </div>
+} @else if (empty()) {
+  <div class="async-state async-state-empty">
+    <div class="async-state-copy">
+      <h3>{{ emptyTitle() }}</h3>
+      <p>{{ emptyMessage() }}</p>
+    </div>
+  </div>
+} @else {
+  <ng-content />
+}

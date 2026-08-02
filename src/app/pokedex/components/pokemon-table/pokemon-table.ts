@@ -26,9 +26,8 @@ import {
   PageEvent,
 } from '@angular/material/paginator';
 
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
 import { Pokemon } from '../../models/pokemon.model';
+import { AsyncStateComponent } from '../../../common/components/async-state/async-state.component';
 
 @Component({
   selector: 'app-pokemon-table',
@@ -40,7 +39,7 @@ import { Pokemon } from '../../models/pokemon.model';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule,
+    AsyncStateComponent,
   ],
 
   templateUrl: './pokemon-table.component.html',
@@ -60,6 +59,9 @@ export class PokemonTableComponent implements AfterViewInit {
   readonly error =
     input<string | null>(null);
 
+  readonly emptyMessage =
+    input('Try changing your search or filters.');
+
   readonly rowClicked =
     output<number>();
 
@@ -68,6 +70,9 @@ export class PokemonTableComponent implements AfterViewInit {
 
   readonly pageChanged =
     output<PageEvent>();
+
+  readonly retry =
+    output<void>();
 
   readonly displayedColumns = [
     'sprite',
@@ -117,6 +122,10 @@ export class PokemonTableComponent implements AfterViewInit {
     event: PageEvent,
   ): void {
     this.pageChanged.emit(event);
+  }
+
+  onRetry(): void {
+    this.retry.emit();
   }
 
   getStat(

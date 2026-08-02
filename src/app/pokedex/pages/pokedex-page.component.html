@@ -23,23 +23,11 @@
           [pokemon]="pokemon()"
           [loading]="loading()"
           [error]="error()"
+          (retry)="reloadPokemon()"
           (rowClicked)="onPokemonClick($event)"
           (sortChanged)="onSort($event)"
           (pageChanged)="onPage($event)">
         </app-pokemon-table>
-
-      </div>
-
-      <!-- Teams -->
-      <div class="card teams-card">
-
-        <app-team-list
-          [teams]="teams()"
-          [selectedTeamId]="selectedTeam()?.id ?? null"
-          (teamSelected)="onTeamSelected($event)"
-          (teamDeleted)="onTeamDeleted($event)"
-          (createClicked)="openCreateTeamDialog()">
-        </app-team-list>
 
       </div>
 
@@ -55,6 +43,9 @@
 
     <app-pokemon-detail
       [pokemon]="selectedPokemon()"
+      [loading]="loading()"
+      [error]="error()"
+      (retry)="reloadPokemon()"
       (closed)="closeDrawer()">
     </app-pokemon-detail>
 

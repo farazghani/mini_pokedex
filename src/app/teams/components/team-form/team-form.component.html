@@ -112,10 +112,29 @@
         [displayWith]="displayPokemon"
         (optionSelected)="addPokemon($event.option.value)">
 
-        @if (filteredPokemon$ | async; as pokemonList) {
-
+        @if (pokemonLoading()) {
+          <app-async-state
+            [loading]="true"
+            loadingTitle="Loading Pokémon"
+            loadingMessage="Preparing autocomplete suggestions.">
+          </app-async-state>
+        } @else if (pokemonError()) {
+          <app-async-state
+            [error]="pokemonError()"
+            errorTitle="Pokémon unavailable"
+            errorMessage="We could not load Pokémon suggestions right now."
+            retryLabel="Retry"
+            (retry)="retryPokemonLoad()">
+          </app-async-state>
+        } @else if (autocompleteEmpty()) {
+          <app-async-state
+            [empty]="true"
+            [emptyTitle]="autocompleteEmptyTitle()"
+            [emptyMessage]="autocompleteEmptyMessage()">
+          </app-async-state>
+        } @else {
           @for (
-            pokemon of pokemonList;
+            pokemon of filteredPokemon();
             track pokemon.id
           ) {
 
@@ -140,7 +159,6 @@
             </mat-option>
 
           }
-
         }
 
       </mat-autocomplete>

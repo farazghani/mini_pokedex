@@ -1,4 +1,29 @@
+<div class="app-shell">
+  <header class="app-nav">
+    <div class="brand">
+      <span class="brand-mark">P</span>
+      <div>
+        <p class="brand-kicker">Mini Pokedex</p>
+        <h1 class="brand-title">Pokemon Hub</h1>
+      </div>
+    </div>
 
-<router-outlet></router-outlet>
+    <nav class="nav-links" aria-label="Primary">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        Pokedex
+      </a>
+      <a routerLink="/teams" routerLinkActive="active">
+        Teams
+      </a>
+    </nav>
+  </header>
 
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="app-footer">
+    Made by Faraz Ghani
+  </footer>
+</div>
 

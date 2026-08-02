@@ -160,26 +160,57 @@ export class PokemonApiService {
   private extractSprite(
     pokemon: PokemonGraphQL,
   ): string {
-    if (
-      pokemon.pokemon_v2_pokemonsprites.length === 0
-    ) {
-      return '';
-    }
-
     try {
-      const sprite = JSON.parse(
-        pokemon.pokemon_v2_pokemonsprites[0].sprites,
-      );
+      const spritePayload =
+        pokemon.pokemon_v2_pokemonsprites[0]?.sprites;
 
-      return (
-        sprite.other?.['official-artwork']
-          ?.front_default ??
-        sprite.front_default ??
-        ''
-      );
+      if (spritePayload) {
+        const sprite = JSON.parse(spritePayload);
+
+        const spriteUrl =
+          sprite.other?.['official-artwork']
+            ?.front_default ??
+          sprite.front_default ??
+          '';
+
+        const normalized = this.normalizeSpriteUrl(
+          spriteUrl,
+        );
+
+        if (normalized) {
+          return normalized;
+        }
+      }
     } catch {
+      // Fall through to the deterministic CDN fallback below.
+    }
+
+    return this.buildFallbackSpriteUrl(pokemon.id);
+  }
+
+  /**
+   * Prefer secure image URLs whenever the API returns a sprite.
+   */
+  private normalizeSpriteUrl(
+    value: string,
+  ): string {
+    if (!value) {
       return '';
     }
+
+    return value.replace(
+      /^http:\/\//i,
+      'https://',
+    );
+  }
+
+  /**
+   * Use the public PokeAPI sprite CDN as a stable fallback.
+   */
+  private buildFallbackSpriteUrl(
+    id: number,
+  ): string {
+    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
   }
 
   /**

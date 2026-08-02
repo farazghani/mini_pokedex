@@ -7,8 +7,8 @@ import {
   signal,
 } from '@angular/core';
 
-import { AsyncPipe } from '@angular/common';
 import { Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import {
   FormBuilder,
@@ -38,12 +38,12 @@ import { PokemonStore } from '../../../pokedex/state/pokemon.store';
 import { Team } from '../../models/team.model';
 import { TeamStore } from '../../state/team.store';
 import { uniqueTeamNameValidator } from '../../validators/unique-team-name.validator';
+import { AsyncStateComponent } from '../../../common/components/async-state/async-state.component';
 
 @Component({
   selector: 'app-team-form',
   standalone: true,
   imports: [
-    AsyncPipe,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
@@ -52,6 +52,7 @@ import { uniqueTeamNameValidator } from '../../validators/unique-team-name.valid
     MatAutocompleteModule,
     MatChipsModule,
     MatIconModule,
+    AsyncStateComponent,
   ],
   templateUrl: './team-form.component.html',
   styleUrl: './team-form.component.scss',
@@ -81,8 +82,31 @@ export class TeamFormComponent implements OnInit {
   readonly searchControl =
     this.fb.nonNullable.control<string | Pokemon>('');
 
+  readonly searchValue = toSignal(
+    this.searchControl.valueChanges.pipe(
+      startWith(''),
+    ),
+    {
+      initialValue: '',
+    },
+  );
+
   readonly selectedPokemon =
     signal<Pokemon[]>([]);
+
+  readonly pokemonLoading = toSignal(
+    this.pokemonStore.loading$,
+    {
+      initialValue: false,
+    },
+  );
+
+  readonly pokemonError = toSignal(
+    this.pokemonStore.error$,
+    {
+      initialValue: null,
+    },
+  );
 
   readonly filteredPokemon$ = combineLatest([
     this.pokemonStore.pokemon$,
@@ -113,12 +137,39 @@ export class TeamFormComponent implements OnInit {
     }),
   );
 
+  readonly filteredPokemon = toSignal(
+    this.filteredPokemon$,
+    {
+      initialValue: [],
+    },
+  );
+
+  readonly autocompleteEmpty = computed(
+    () => this.filteredPokemon().length === 0,
+  );
+
+  readonly autocompleteEmptyTitle = computed(() =>
+    this.searchTerm()
+      ? 'No Pokémon Found'
+      : 'Start typing to search',
+  );
+
+  readonly autocompleteEmptyMessage = computed(() =>
+    this.searchTerm()
+      ? 'No Pokémon match your search.'
+      : 'Type at least one character to search the Pokémon cache.',
+  );
+
   readonly teamSize = computed(
     () => this.selectedPokemon().length,
   );
 
   readonly canAddPokemon = computed(
     () => this.teamSize() < 6,
+  );
+
+  readonly searchTerm = computed(() =>
+    this.toSearchTerm(this.searchValue()),
   );
 
   ngOnInit(): void {
@@ -131,6 +182,10 @@ export class TeamFormComponent implements OnInit {
     return typeof value === 'string'
       ? value
       : value?.name ?? '';
+  }
+
+  retryPokemonLoad(): void {
+    this.pokemonStore.loadPokemon();
   }
 
   addPokemon(pokemon: Pokemon): void {
