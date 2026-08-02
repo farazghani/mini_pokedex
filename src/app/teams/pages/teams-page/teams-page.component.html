@@ -1,8 +1,10 @@
-<app-team-list
-  [teams]="teams()"
-  [loading]="loading()"
-  [error]="error()"
-  (retry)="reloadTeams()"
-  (createClicked)="createTeam()"
-  (teamDeleted)="deleteTeam($event)">
-</app-team-list>
+<section class="teams-page-shell">
+  <app-team-list
+    [teams]="teams()"
+    [loading]="loading()"
+    [error]="error()"
+    (retry)="reloadTeams()"
+    (createClicked)="createTeam()"
+    (teamDeleted)="deleteTeam($event)">
+  </app-team-list>
+</section>

@@ -18,7 +18,7 @@ import { TeamListComponent } from '../../components/team-list/team-list.componen
   standalone: true,
   imports: [TeamListComponent],
   templateUrl: './teams-page.component.html',
-  styleUrl: './teams-page.component.scss',
+  styleUrls: ['./teams-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamsPageComponent implements OnInit {

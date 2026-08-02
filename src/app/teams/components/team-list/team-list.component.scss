@@ -2,15 +2,26 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  gap: 16px;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.header h2 {
+  margin: 0;
+  color: #7a0b0b;
+  font-size: 1.7rem;
+  letter-spacing: -0.02em;
 }
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(320px, 1fr)
-  );
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

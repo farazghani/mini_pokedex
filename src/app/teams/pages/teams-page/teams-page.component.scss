@@ -1,24 +1,18 @@
-.header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:24px;
-
+.teams-page-shell {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.5rem 3rem;
 }
 
-.team-grid{
+.teams-page-shell > app-team-list {
+  width: min(1100px, 100%);
+  display: block;
+}
 
-    display:grid;
-
-    grid-template-columns:repeat(
-        auto-fill,
-        minmax(320px,1fr)
-    );
-
-    gap:24px;
-
+@media (max-width: 768px) {
+  .teams-page-shell {
+    padding: 1.25rem 1rem 2rem;
+    align-items: start;
+  }
 }
