@@ -1,52 +1,13 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
 html {
   height: 100%;
-  @include mat.theme(
-    (
-      color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
-      ),
-      typography: Roboto,
-      density: 0,
-    )
-  );
-}
-
-body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
-  margin: 0;
-  height: 100%;
-}
-
-/* ---------- Angular Material Theme ---------- */
-
-html {
-  height: 100%;
 
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
+        primary: mat.$orange-palette,
+        tertiary: mat.$yellow-palette,
       ),
       typography: Roboto,
       density: 0,
@@ -59,15 +20,14 @@ body {
   min-height: 100vh;
 
   color-scheme: light;
-
-  background: #f4f7fb;
-
-  color: var(--mat-sys-on-surface);
-
+  color: #1f2937;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
-}
 
-/* ---------- Reset ---------- */
+  background:
+    radial-gradient(circle at top, rgb(255 214 102 / 0.38), transparent 28%),
+    radial-gradient(circle at bottom right, rgb(59 130 246 / 0.1), transparent 22%),
+    linear-gradient(180deg, #fff8e7 0%, #f6f7fb 42%, #eef2f7 100%);
+}
 
 *,
 *::before,
@@ -89,8 +49,6 @@ table {
   border-collapse: collapse;
 }
 
-/* ---------- Layout ---------- */
-
 .container {
   max-width: 1400px;
   margin-inline: auto;
@@ -98,13 +56,13 @@ table {
 }
 
 .card {
-  background: white;
-  border-radius: 16px;
+  background: rgb(255 255 255 / 0.92);
+  border: 1px solid rgb(255 255 255 / 0.7);
+  border-radius: 20px;
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
+  box-shadow: 0 14px 38px rgb(15 23 42 / 0.08);
+  backdrop-filter: blur(8px);
 }
-
-/* ---------- Utilities ---------- */
 
 .text-center {
   text-align: center;
@@ -121,8 +79,6 @@ table {
 .w-100 {
   width: 100%;
 }
-
-/* ---------- Material ---------- */
 
 .mat-mdc-table {
   border-radius: 12px;

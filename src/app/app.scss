@@ -3,8 +3,9 @@
   display: flex;
   flex-direction: column;
   background:
-    radial-gradient(circle at top, rgb(255 235 59 / 0.16), transparent 34%),
-    linear-gradient(180deg, #fff6c9 0%, #f4f7fb 22%, #eef2f7 100%);
+    radial-gradient(circle at top, rgb(255 225 109 / 0.26), transparent 32%),
+    radial-gradient(circle at bottom right, rgb(59 130 246 / 0.08), transparent 24%),
+    linear-gradient(180deg, #fff7d8 0%, #f5f7fb 26%, #eef2f8 100%);
 }
 
 .app-nav {
@@ -13,10 +14,10 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  background: linear-gradient(90deg, #b30000 0%, #e11d1d 45%, #8f0000 100%);
-  color: #ffd84d;
-  border-bottom: 4px solid #ffcc00;
-  box-shadow: 0 10px 30px rgb(0 0 0 / 18%);
+  background: linear-gradient(90deg, #8f0000 0%, #c91c1c 45%, #6f0000 100%);
+  color: #ffe48a;
+  border-bottom: 4px solid #ffd23f;
+  box-shadow: 0 12px 30px rgb(15 23 42 / 0.16);
 }
 
 .brand {
@@ -33,9 +34,9 @@
   display: grid;
   place-items: center;
   font-weight: 900;
-  color: #8f0000;
-  background: radial-gradient(circle at 35% 35%, #fff7b0 0%, #ffd84d 42%, #ffb800 100%);
-  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 24%);
+  color: #7a0b0b;
+  background: radial-gradient(circle at 35% 35%, #fff9cd 0%, #ffe070 44%, #ffbe2f 100%);
+  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 28%);
 }
 
 .brand-kicker,
@@ -48,7 +49,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 .brand-title {
@@ -63,20 +64,25 @@
 }
 
 .nav-links a {
-  color: #ffd84d;
+  color: #ffe48a;
   text-decoration: none;
   font-weight: 700;
   padding: 0.65rem 1rem;
-  border: 2px solid rgb(255 216 77 / 0.34);
+  border: 2px solid rgb(255 228 138 / 0.3);
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.08);
-  transition: transform 160ms ease, background-color 160ms ease, color 160ms ease;
+  background: rgb(255 255 255 / 0.09);
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
-  background: #ffd84d;
-  color: #8f0000;
+  background: #ffe48a;
+  color: #7a0b0b;
+  border-color: #ffe48a;
   transform: translateY(-1px);
 }
 
@@ -96,9 +102,9 @@
   padding: 1rem 1.5rem;
   text-align: center;
   font-weight: 600;
-  color: #8f0000;
-  background: #ffef9f;
-  border-top: 1px solid rgb(143 0 0 / 0.16);
+  color: #7a0b0b;
+  background: linear-gradient(180deg, #fff0a6 0%, #ffe68a 100%);
+  border-top: 1px solid rgb(122 11 11 / 0.14);
 }
 
 @media (max-width: 640px) {
