@@ -1,52 +1,13 @@
-<div class="header">
+@if (teams$ | async; as teams) {
 
-    <h1>
+  <app-team-list
 
-        My Teams
+    [teams]="teams"
 
-    </h1>
+    (createClicked)="createTeam()"
 
-    <a routerLink="/teams/create">
+    (teamDeleted)="deleteTeam($event)">
 
-        Create Team
-
-    </a>
-
-</div>
-
-@if(teams$ | async; as teams){
-
-    @if(teams.length===0){
-
-        <p>
-
-            No Teams Yet
-
-        </p>
-
-    }
-
-    @else{
-
-        <div class="team-grid">
-
-            @for(
-                team of teams;
-                track team.id
-            ){
-
-                <app-team-card
-
-                    [team]="team"
-
-                    (delete)="deleteTeam($event)">
-
-                </app-team-card>
-
-            }
-
-        </div>
-
-    }
+  </app-team-list>
 
 }

@@ -6,24 +6,29 @@ import {
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { BehaviorSubject, finalize } from 'rxjs';
-import { Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  defer,
+  finalize,
+  map,
+  throwError,
+} from 'rxjs';
+
 import { TeamApiService } from '../services/team-api.services';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { Team } from '../models/team.model';
 
 import {
   TeamState,
   initialTeamState,
 } from './team.state';
 
-import { Team } from '../models/team.model';
-
 @Injectable({
   providedIn: 'root',
 })
 export class TeamStore {
   private readonly api = inject(TeamApiService);
-
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly stateSubject =
@@ -34,25 +39,22 @@ export class TeamStore {
   readonly state$ =
     this.stateSubject.asObservable();
 
-    readonly teams$ = this.state$.pipe(
-  map((state) => state.teams),
-  distinctUntilChanged(),
-);
+  readonly teams$ = this.state$.pipe(
+    map((state) => state.teams),
+  );
 
-readonly loading$ = this.state$.pipe(
-  map((state) => state.loading),
-  distinctUntilChanged(),
-);
+  readonly loading$ = this.state$.pipe(
+    map((state) => state.loading),
+  );
 
-readonly error$ = this.state$.pipe(
-  map((state) => state.error),
-  distinctUntilChanged(),
-);
+  readonly error$ = this.state$.pipe(
+    map((state) => state.error),
+  );
 
-readonly selectedTeamId$ = this.state$.pipe(
-  map((state) => state.selectedTeamId),
-  distinctUntilChanged(),
-);
+  readonly selectedTeamId$ = this.state$.pipe(
+    map((state) => state.selectedTeamId),
+  );
+
   /**
    * Load all teams.
    */
@@ -70,17 +72,24 @@ readonly selectedTeamId$ = this.state$.pipe(
             loading: false,
           }),
         ),
-
-        takeUntilDestroyed(
-          this.destroyRef,
-        ),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: (teams) =>
+        next: (teams) => {
+          const selectedTeamId =
+            this.stateSubject.value.selectedTeamId;
+
           this.patchState({
             teams,
-          }),
-
+            selectedTeamId:
+              selectedTeamId === null ||
+              teams.some(
+                (team) => team.id === selectedTeamId,
+              )
+                ? selectedTeamId
+                : null,
+          });
+        },
         error: (error) =>
           this.patchState({
             error: error.message,
@@ -91,100 +100,83 @@ readonly selectedTeamId$ = this.state$.pipe(
   /**
    * Optimistic create.
    */
-createTeam(
-  team: Omit<Team, 'id'>,
-): Observable<void> {
+  createTeam(
+    team: Omit<Team, 'id'>,
+  ): Observable<Team> {
+    return defer(() => {
+      const previousTeams =
+        this.stateSubject.value.teams;
+      const optimisticTeam: Team = {
+        ...team,
+        id: Date.now(),
+      };
+      const optimisticTeamId = optimisticTeam.id;
 
-  return new Observable<void>((observer) => {
+      this.patchState({
+        error: null,
+        teams: [optimisticTeam, ...previousTeams],
+      });
 
-    // Save current state for rollback
-    const previousTeams =
-      this.stateSubject.value.teams;
-
-    // Optimistic team
-    const optimisticTeam: Team = {
-      ...team,
-      id: Date.now(),
-    };
-
-    // Immediately show it
-    this.patchState({
-      teams: [
-        optimisticTeam,
-        ...previousTeams,
-      ],
-    });
-
-    this.api
-      .createTeam$(team)
-      .pipe(
-        takeUntilDestroyed(
-          this.destroyRef,
-        ),
-      )
-      .subscribe({
-
-        next: (createdTeam) => {
-
-          const updatedTeams =
-            this.stateSubject.value.teams.map(
-              (team) =>
-                team.id === optimisticTeam.id
-                  ? createdTeam
-                  : team,
-            );
+      return this.api.createTeam$(team).pipe(
+        map((createdTeam) => {
+          if (optimisticTeamId === undefined) {
+            return createdTeam;
+          }
 
           this.patchState({
-            teams: updatedTeams,
+            teams: this.stateSubject.value.teams.map(
+              (currentTeam) =>
+                currentTeam.id === optimisticTeamId
+                  ? createdTeam
+                  : currentTeam,
+            ),
           });
 
-          observer.next();
-
-          observer.complete();
-        },
-
-        error: (error) => {
-
-          // Rollback
+          return createdTeam;
+        }),
+        catchError((error) => {
           this.patchState({
             teams: previousTeams,
             error: error.message,
           });
 
-          observer.error(error);
-        },
-      });
-  });
-}
+          return throwError(() => error);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      );
+    });
+  }
 
   /**
    * Delete team.
    */
-  deleteTeam(
-    id: number,
-  ): void {
+  deleteTeam(id: number): void {
     const previousTeams =
       this.stateSubject.value.teams;
+    const previousSelectedTeamId =
+      this.stateSubject.value.selectedTeamId;
 
     this.patchState({
-      teams:
-        previousTeams.filter(
-          (team) => team.id !== id,
-        ),
+      teams: previousTeams.filter(
+        (team) => team.id !== id,
+      ),
+      selectedTeamId:
+        previousSelectedTeamId === id
+          ? null
+          : previousSelectedTeamId,
+      error: null,
     });
 
     this.api
       .deleteTeam$(id)
       .pipe(
-        takeUntilDestroyed(
-          this.destroyRef,
-        ),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         error: (error) =>
           this.patchState({
             teams: previousTeams,
-
+            selectedTeamId: previousSelectedTeamId,
             error: error.message,
           }),
       });
@@ -193,9 +185,7 @@ createTeam(
   /**
    * Select team.
    */
-  selectTeam(
-    id: number | null,
-  ): void {
+  selectTeam(id: number | null): void {
     this.patchState({
       selectedTeamId: id,
     });
@@ -209,7 +199,6 @@ createTeam(
   ): void {
     this.stateSubject.next({
       ...this.stateSubject.value,
-
       ...state,
     });
   }

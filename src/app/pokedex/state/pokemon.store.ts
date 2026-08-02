@@ -1,4 +1,10 @@
-import { DestroyRef, Injectable, inject } from '@angular/core';
+import {
+  DestroyRef,
+  Injectable,
+  inject,
+} from '@angular/core';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
   BehaviorSubject,
@@ -10,8 +16,6 @@ import {
   of,
   switchMap,
 } from 'rxjs';
-
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { PokemonApiService } from '../services/pokemon-api.services';
 
@@ -25,7 +29,6 @@ import {
 })
 export class PokemonStore {
   private readonly api = inject(PokemonApiService);
-
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly stateSubject =
@@ -39,6 +42,28 @@ export class PokemonStore {
   private readonly searchRequests$ =
     new Subject<string>();
 
+  readonly pokemon$ = this.state$.pipe(
+    map((state) => state.pokemon),
+    distinctUntilChanged(),
+  );
+
+  readonly loading$ = this.state$.pipe(
+    map((state) => state.loading),
+    distinctUntilChanged(),
+  );
+
+  readonly error$ = this.state$.pipe(
+    map((state) => state.error),
+    distinctUntilChanged(),
+  );
+
+  readonly search$ = this.state$.pipe(
+    map((state) => state.search),
+    distinctUntilChanged(),
+  );
+
+  private readonly pokemonLoadLimit = 2000;
+
   constructor() {
     this.initializeSearch();
   }
@@ -47,20 +72,26 @@ export class PokemonStore {
    * Load Pokémon from API.
    */
   loadPokemon(): void {
+    if (
+      this.stateSubject.value.loading ||
+      this.stateSubject.value.pokemon.length > 0
+    ) {
+      return;
+    }
+
     this.patchState({
       loading: true,
       error: null,
     });
 
     this.api
-      .getPokemon$(200)
+      .getPokemon$(this.pokemonLoadLimit)
       .pipe(
         finalize(() =>
           this.patchState({
             loading: false,
           }),
         ),
-
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
@@ -68,7 +99,6 @@ export class PokemonStore {
           this.patchState({
             pokemon,
           }),
-
         error: (error) =>
           this.patchState({
             error: error.message,
@@ -79,34 +109,29 @@ export class PokemonStore {
   /**
    * Search command.
    */
-  search(
-    value: string,
-  ): void {
+  search(value: string): void {
     this.searchRequests$.next(value);
   }
 
   private initializeSearch(): void {
-  this.searchRequests$
-    .pipe(
-      debounceTime(300),
-
-      distinctUntilChanged(),
-
-      switchMap((search) =>
-        of(search).pipe(
-          map((value) => value.trim()),
+    this.searchRequests$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((search) =>
+          of(search).pipe(
+            map((value) => value.trim()),
+          ),
         ),
-      ),
-
-      takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe((search) => {
-      this.patchState({
-        search,
-        pageIndex: 0,
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((search) => {
+        this.patchState({
+          search,
+          pageIndex: 0,
+        });
       });
-    });
-}
+  }
 
   setSelectedPokemon(
     id: number | null,
@@ -116,9 +141,7 @@ export class PokemonStore {
     });
   }
 
-  setType(
-    type: string | null,
-  ): void {
+  setType(type: string | null): void {
     this.patchState({
       selectedType: type,
     });

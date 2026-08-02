@@ -1,50 +1,51 @@
-<div class="team-card">
+<article
+  class="team-card"
+  [class.is-selected]="selected()"
+  (click)="onSelect()">
 
-    <div class="header">
+  <div class="header">
 
-        <h2>{{ team().name }}</h2>
+    <div>
 
-        <button
-            type="button"
-            (click)="onDelete()">
+      <h3>{{ team().name }}</h3>
 
-            Delete
-
-        </button>
-
-    </div>
-
-    <small>
-
-        Created
-
-        {{ team().createdAt | date }}
-
-    </small>
-
-    <div class="pokemon-grid">
-
-        @for(
-            pokemon of teamPokemon();
-            track pokemon.id
-        ){
-
-            <div class="pokemon">
-
-                <img
-                    [src]="pokemon.sprite"
-                    [alt]="pokemon.name">
-
-                <span>
-
-                    {{ pokemon.name }}
-
-                </span>
-
-            </div>
-
-        }
+      <small>Created {{ team().createdAt | date }}</small>
 
     </div>
 
-</div>
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="$event.stopPropagation(); onDelete()">
+
+      Delete
+
+    </button>
+
+  </div>
+
+  <div class="pokemon-grid">
+
+    @for (pokemon of teamPokemon(); track pokemon.id) {
+
+      <div class="pokemon">
+
+        <img
+          [src]="pokemon.sprite"
+          [alt]="pokemon.name">
+
+        <span>{{ pokemon.name }}</span>
+
+      </div>
+
+    }
+
+    @if (teamPokemon().length === 0) {
+      <p class="empty-state">
+        Pokémon data is still loading.
+      </p>
+    }
+
+  </div>
+
+</article>

@@ -7,7 +7,6 @@ import {
   inject,
   signal,
 } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PokemonStore } from '../state/pokemon.store';
@@ -21,6 +20,9 @@ import { SearchBarComponent } from '../components/search-bar/search-bar.componen
 import { TypeFilterComponent } from '../components/type-filter/type-filter.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { PokemonDetailComponent } from '../components/pokemon-detail/pokemon-detail.component';
+import { MatDialog } from '@angular/material/dialog';
+import { TeamDialogComponent } from '../../teams/components/team-dialog/team-dialog.component';
+import { TeamListComponent } from '../../teams/components/team-list/team-list.component';
 
 @Component({
   selector: 'app-pokedex-page',
@@ -32,6 +34,7 @@ import { PokemonDetailComponent } from '../components/pokemon-detail/pokemon-det
     TypeFilterComponent,
     MatSidenavModule,
     PokemonDetailComponent,
+    TeamListComponent,
   ],
   templateUrl: './pokedex-page.component.html',
   styleUrl: './pokedex-page.component.scss',
@@ -44,7 +47,7 @@ export class PokedexPageComponent implements OnInit {
   private readonly pokemonSelectors = inject(PokemonSelectors);
   private readonly teamStore = inject(TeamStore);
   private readonly teamSelectors = inject(TeamSelectors);
-
+  private readonly dialog = inject(MatDialog);
   // ------------------------------------------------------
   // Observable → Signal
   // ------------------------------------------------------
@@ -140,6 +143,7 @@ readonly pokemonTypes = computed(() => {
       const team = this.selectedTeam();
 
       if (!team) {
+        localStorage.removeItem('selected-team');
         return;
       }
 
@@ -208,5 +212,45 @@ onTypeChanged(type: string | null): void {
     pokemon: { id: number },
   ): number {
     return pokemon.id;
+  }
+
+  onTeamSelected(id: number): void {
+  this.teamStore.selectTeam(id);
+}
+
+onTeamDeleted(id: number): void {
+  this.teamStore.deleteTeam(id);
+}
+  openCreateTeamDialog(): void {
+    const dialogRef = this.dialog.open(
+      TeamDialogComponent,
+    );
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
+
+      this.teamStore
+        .createTeam({
+          trainerId: 1,
+          name: result.name,
+          pokemonIds: [],
+          createdAt: new Date().toISOString(),
+        })
+        .subscribe({
+          next: (createdTeam) => {
+            this.teamStore.selectTeam(
+              createdTeam.id,
+            );
+          },
+          error: (error) => {
+            console.error(
+              'Unable to create team.',
+              error,
+            );
+          },
+        });
+    });
   }
 }

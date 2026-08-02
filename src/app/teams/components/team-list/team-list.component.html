@@ -5,6 +5,7 @@
   <button
     mat-raised-button
     color="primary"
+    type="button"
     (click)="createClicked.emit()">
 
     + New Team
@@ -24,9 +25,9 @@
     @for (team of teams(); track team.id) {
 
       <app-team-card
-
         [team]="team"
-
+        [selected]="team.id === selectedTeamId()"
+        (teamSelected)="teamSelected.emit($event)"
         (delete)="teamDeleted.emit($event)">
 
       </app-team-card>

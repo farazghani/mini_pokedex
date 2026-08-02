@@ -1,102 +1,224 @@
-<form
-    [formGroup]="form">
+<mat-card class="team-form-card">
 
-    <div class="form-group">
+  <mat-card-header>
 
-        <label>
+    <mat-card-title>
 
-            Team Name
+      Create Team
 
-        </label>
+    </mat-card-title>
+
+  </mat-card-header>
+
+  <mat-card-content>
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+
+      <!-- Team Name -->
+
+      <mat-form-field
+        appearance="outline"
+        class="full-width">
+
+        <mat-label>
+
+          Team Name
+
+        </mat-label>
 
         <input
+          matInput
+          formControlName="name"
+          placeholder="Enter team name" />
 
-            type="text"
+        @if (
+          form.controls.name.touched &&
+          form.controls.name.hasError('required')
+        ) {
 
-            formControlName="name"
+          <mat-error>
 
-            placeholder="Enter team name"
+            Team name is required.
 
-        />
-
-        @if(form.controls.name.touched){
-
-            @if(form.controls.name.hasError('required')){
-
-                <small>
-
-                    Team name is required.
-
-                </small>
-
-            }
-
-            @if(form.controls.name.hasError('minlength')){
-
-                <small>
-
-                    Minimum 3 characters.
-
-                </small>
-
-            }
-
-            @if(form.controls.name.hasError('maxlength')){
-
-                <small>
-
-                    Maximum 30 characters.
-
-                </small>
-
-            }
-
-            @if(form.controls.name.hasError('teamExists')){
-
-                <small>
-
-                    Team name already exists.
-
-                </small>
-
-            }
+          </mat-error>
 
         }
 
-    </div>
+        @if (
+          form.controls.name.touched &&
+          form.controls.name.hasError('minlength')
+        ) {
 
-    <div class="form-group">
+          <mat-error>
 
-        <label>
+            Team name must be at least 3 characters.
 
-            Pokémon
+          </mat-error>
 
-        </label>
+        }
+
+        @if (
+          form.controls.name.touched &&
+          form.controls.name.hasError('maxlength')
+        ) {
+
+          <mat-error>
+
+            Team name cannot exceed 30 characters.
+
+          </mat-error>
+
+        }
+
+        @if (
+          form.controls.name.touched &&
+          form.controls.name.hasError('teamExists')
+        ) {
+
+          <mat-error>
+
+            Team name already exists.
+
+          </mat-error>
+
+        }
+
+      </mat-form-field>
+
+      <!-- Pokemon Search -->
+
+      <mat-form-field
+        appearance="outline"
+        class="full-width">
+
+        <mat-label>
+
+          Search Pokémon
+
+        </mat-label>
 
         <input
+          matInput
+          placeholder="Search Pokémon..."
+          [formControl]="searchControl"
+          [matAutocomplete]="pokemonAuto" />
 
-            type="text"
+      </mat-form-field>
 
-            placeholder="Search Pokémon..."
+      <mat-autocomplete
+        #pokemonAuto="matAutocomplete"
+        [displayWith]="displayPokemon"
+        (optionSelected)="addPokemon($event.option.value)">
 
-        />
+        @if (filteredPokemon$ | async; as pokemonList) {
 
-    </div>
+          @for (
+            pokemon of pokemonList;
+            track pokemon.id
+          ) {
 
-    <div>
+            <mat-option [value]="pokemon">
 
-        Selected Pokémon
+              <div class="pokemon-option">
 
-    </div>
+                <img
+                  [src]="pokemon.sprite"
+                  [alt]="pokemon.name"
+                  width="36"
+                  height="36" />
 
-    <button
+                <span>
 
+                  {{ pokemon.name }}
+
+                </span>
+
+              </div>
+
+            </mat-option>
+
+          }
+
+        }
+
+      </mat-autocomplete>
+
+      <!-- Selected Pokemon -->
+
+      <div class="selected-header">
+
+        <h3>
+
+          Selected Pokémon
+
+        </h3>
+
+        <span>
+
+          {{ teamSize() }}/6
+
+        </span>
+
+      </div>
+
+      <mat-chip-grid>
+
+        @for (
+          pokemon of selectedPokemon();
+          track pokemon.id
+        ) {
+
+          <mat-chip-row
+            removable
+            (removed)="removePokemon(pokemon.id)">
+
+            {{ pokemon.name }}
+
+            <button
+              matChipRemove>
+
+              <mat-icon>
+
+                cancel
+
+              </mat-icon>
+
+            </button>
+
+          </mat-chip-row>
+
+        }
+
+      </mat-chip-grid>
+
+      @if(teamSize() === 0){
+
+        <p class="helper-text">
+
+          Select at least one Pokémon.
+
+        </p>
+
+      }
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="save-button"
         type="submit"
-
-        [disabled]="form.invalid">
+        [disabled]="
+          form.invalid ||
+          teamSize() === 0
+        ">
 
         Save Team
 
-    </button>
+      </button>
 
-</form>
+    </form>
+
+  </mat-card-content>
+
+</mat-card>

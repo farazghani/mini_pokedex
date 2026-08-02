@@ -6,43 +6,40 @@ import {
 } from '@angular/core';
 
 import { AsyncPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { TeamStore } from '../../state/team.store';
-import { TeamCardComponent } from '../../components/team-card/team-card.component';
+import { PokemonStore } from '../../../pokedex/state/pokemon.store';
+import { TeamListComponent } from '../../components/team-list/team-list.component';
 
 @Component({
   selector: 'app-teams-page',
   standalone: true,
   imports: [
     AsyncPipe,
-    RouterLink,
-    TeamCardComponent,
+    TeamListComponent,
   ],
   templateUrl: './teams-page.component.html',
   styleUrl: './teams-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamsPageComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly teamStore = inject(TeamStore);
+  private readonly pokemonStore = inject(PokemonStore);
 
-  private readonly teamStore =
-    inject(TeamStore);
-
-  readonly teams$ =
-    this.teamStore.teams$;
+  readonly teams$ = this.teamStore.teams$;
 
   ngOnInit(): void {
-
+    this.pokemonStore.loadPokemon();
     this.teamStore.loadTeams();
-
   }
 
-  deleteTeam(
-    id: number,
-  ): void {
+  createTeam(): void {
+    this.router.navigate(['/teams/create']);
+  }
 
+  deleteTeam(id: number): void {
     this.teamStore.deleteTeam(id);
-
   }
-
 }

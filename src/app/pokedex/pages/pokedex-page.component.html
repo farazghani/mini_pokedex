@@ -30,6 +30,19 @@
 
       </div>
 
+      <!-- Teams -->
+      <div class="card teams-card">
+
+        <app-team-list
+          [teams]="teams()"
+          [selectedTeamId]="selectedTeam()?.id ?? null"
+          (teamSelected)="onTeamSelected($event)"
+          (teamDeleted)="onTeamDeleted($event)"
+          (createClicked)="openCreateTeamDialog()">
+        </app-team-list>
+
+      </div>
+
     </div>
 
   </mat-drawer-content>

@@ -1,25 +1,44 @@
-form{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:24px;
-
+.team-form-card {
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 16px;
 }
 
-.form-group{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:8px;
-
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-small{
+.full-width {
+  width: 100%;
+}
 
-    color:red;
+.selected-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
+.pokemon-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pokemon-option img {
+  border-radius: 50%;
+}
+
+mat-chip-grid {
+  margin-top: 8px;
+}
+
+.save-button {
+  align-self: flex-end;
+}
+
+.helper-text {
+  color: #666;
+  font-size: 14px;
 }
