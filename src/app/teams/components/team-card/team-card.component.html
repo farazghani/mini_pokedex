@@ -1,0 +1,50 @@
+<div class="team-card">
+
+    <div class="header">
+
+        <h2>{{ team().name }}</h2>
+
+        <button
+            type="button"
+            (click)="onDelete()">
+
+            Delete
+
+        </button>
+
+    </div>
+
+    <small>
+
+        Created
+
+        {{ team().createdAt | date }}
+
+    </small>
+
+    <div class="pokemon-grid">
+
+        @for(
+            pokemon of teamPokemon();
+            track pokemon.id
+        ){
+
+            <div class="pokemon">
+
+                <img
+                    [src]="pokemon.sprite"
+                    [alt]="pokemon.name">
+
+                <span>
+
+                    {{ pokemon.name }}
+
+                </span>
+
+            </div>
+
+        }
+
+    </div>
+
+</div>

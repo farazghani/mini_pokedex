@@ -1,0 +1,102 @@
+<form
+    [formGroup]="form">
+
+    <div class="form-group">
+
+        <label>
+
+            Team Name
+
+        </label>
+
+        <input
+
+            type="text"
+
+            formControlName="name"
+
+            placeholder="Enter team name"
+
+        />
+
+        @if(form.controls.name.touched){
+
+            @if(form.controls.name.hasError('required')){
+
+                <small>
+
+                    Team name is required.
+
+                </small>
+
+            }
+
+            @if(form.controls.name.hasError('minlength')){
+
+                <small>
+
+                    Minimum 3 characters.
+
+                </small>
+
+            }
+
+            @if(form.controls.name.hasError('maxlength')){
+
+                <small>
+
+                    Maximum 30 characters.
+
+                </small>
+
+            }
+
+            @if(form.controls.name.hasError('teamExists')){
+
+                <small>
+
+                    Team name already exists.
+
+                </small>
+
+            }
+
+        }
+
+    </div>
+
+    <div class="form-group">
+
+        <label>
+
+            Pokémon
+
+        </label>
+
+        <input
+
+            type="text"
+
+            placeholder="Search Pokémon..."
+
+        />
+
+    </div>
+
+    <div>
+
+        Selected Pokémon
+
+    </div>
+
+    <button
+
+        type="submit"
+
+        [disabled]="form.invalid">
+
+        Save Team
+
+    </button>
+
+</form>

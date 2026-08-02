@@ -7,8 +7,9 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { BehaviorSubject, finalize } from 'rxjs';
-
+import { Observable } from 'rxjs';
 import { TeamApiService } from '../services/team-api.services';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 import {
   TeamState,
@@ -33,6 +34,25 @@ export class TeamStore {
   readonly state$ =
     this.stateSubject.asObservable();
 
+    readonly teams$ = this.state$.pipe(
+  map((state) => state.teams),
+  distinctUntilChanged(),
+);
+
+readonly loading$ = this.state$.pipe(
+  map((state) => state.loading),
+  distinctUntilChanged(),
+);
+
+readonly error$ = this.state$.pipe(
+  map((state) => state.error),
+  distinctUntilChanged(),
+);
+
+readonly selectedTeamId$ = this.state$.pipe(
+  map((state) => state.selectedTeamId),
+  distinctUntilChanged(),
+);
   /**
    * Load all teams.
    */
@@ -71,19 +91,27 @@ export class TeamStore {
   /**
    * Optimistic create.
    */
-  createTeam(
-    team: Omit<Team, 'id'>,
-  ): void {
-    const temporaryTeam: Team = {
-      ...team,
+createTeam(
+  team: Omit<Team, 'id'>,
+): Observable<void> {
 
+  return new Observable<void>((observer) => {
+
+    // Save current state for rollback
+    const previousTeams =
+      this.stateSubject.value.teams;
+
+    // Optimistic team
+    const optimisticTeam: Team = {
+      ...team,
       id: Date.now(),
     };
 
+    // Immediately show it
     this.patchState({
       teams: [
-        temporaryTeam,
-        ...this.stateSubject.value.teams,
+        optimisticTeam,
+        ...previousTeams,
       ],
     });
 
@@ -95,35 +123,39 @@ export class TeamStore {
         ),
       )
       .subscribe({
+
         next: (createdTeam) => {
-          const teams =
+
+          const updatedTeams =
             this.stateSubject.value.teams.map(
-              (current) =>
-                current.id ===
-                temporaryTeam.id
+              (team) =>
+                team.id === optimisticTeam.id
                   ? createdTeam
-                  : current,
+                  : team,
             );
 
           this.patchState({
-            teams,
+            teams: updatedTeams,
           });
+
+          observer.next();
+
+          observer.complete();
         },
 
         error: (error) => {
-          this.patchState({
-            teams:
-              this.stateSubject.value.teams.filter(
-                (team) =>
-                  team.id !==
-                  temporaryTeam.id,
-              ),
 
+          // Rollback
+          this.patchState({
+            teams: previousTeams,
             error: error.message,
           });
+
+          observer.error(error);
         },
       });
-  }
+  });
+}
 
   /**
    * Delete team.
