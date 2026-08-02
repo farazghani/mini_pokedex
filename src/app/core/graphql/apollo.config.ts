@@ -9,7 +9,7 @@ import { HttpLink } from 'apollo-angular/http';
 const POKEMON_GRAPHQL_URL =
   'https://beta.pokeapi.co/graphql/v1beta';
 
-const TEAM_GRAPHQL_URL = 'http://localhost:3000/';
+const TEAM_GRAPHQL_URL = 'http://127.0.0.1:4000/';
 
 const POKEMON_OPERATION_NAMES = new Set([
   'GetPokemon',
