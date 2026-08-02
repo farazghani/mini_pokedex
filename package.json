@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "mock:graphql": "json-graphql-server db.js",
+    "mock:graphql": "json-graphql-server db.js -p 4000 -h 127.0.0.1",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
