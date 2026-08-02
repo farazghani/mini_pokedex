@@ -2,7 +2,7 @@ import { gql } from 'apollo-angular';
 
 export const GET_TEAMS = gql`
   query GetTeams {
-    teams {
+    allTeams {
       id
       trainer_id
       name

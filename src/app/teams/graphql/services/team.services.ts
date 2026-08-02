@@ -1,42 +1,23 @@
 import { inject, Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
 
-import { GET_TEAMS } from '../team.queries';
-import { CREATE_TEAM , DELETE_TEAM } from '../team.mutations';
 import { Team } from '../../models/team.model';
+import { TeamApiService } from '../../services/team-api.services';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TeamService {
-  private readonly apollo = inject(Apollo);
+  private readonly api = inject(TeamApiService);
 
   getTeams() {
-    return this.apollo.watchQuery<{ teams: Team[] }>({
-      query: GET_TEAMS,
-    }).valueChanges;
+    return this.api.getTeams$();
   }
 
   createTeam(team: Omit<Team, 'id'>) {
-    return this.apollo.mutate<{
-      createTeam: Team;
-    }>({
-      mutation: CREATE_TEAM,
-      variables: {
-        trainerId: team.trainerId,
-        name: team.name,
-        pokemonIds: team.pokemonIds,
-        createdAt: team.createdAt,
-      },
-    });
+    return this.api.createTeam$(team);
   }
 
   deleteTeam(id: number) {
-    return this.apollo.mutate({
-      mutation: DELETE_TEAM,
-      variables: {
-        id,
-      },
-    });
+    return this.api.deleteTeam$(id);
   }
 }

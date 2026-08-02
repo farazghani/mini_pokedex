@@ -1,5 +1,5 @@
 export interface TeamQueryResponse {
-  teams?: TeamGraphQL[];
+  allTeams?: TeamGraphQL[];
 }
 
 export interface TeamMutationResponse {

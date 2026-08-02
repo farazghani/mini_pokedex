@@ -48,7 +48,7 @@ export class TeamApiService {
         }),
 
         map(({ data }) =>
-          (data?.teams ?? []).map((team) =>
+          (data?.allTeams ?? []).map((team) =>
             this.mapTeam(team),
           ),
         ),
@@ -66,7 +66,7 @@ export class TeamApiService {
   }
 
   /**
-   * Create team.
+   * Create a team.
    */
   createTeam$(
     team: Omit<Team, 'id'>,
@@ -121,20 +121,16 @@ export class TeamApiService {
   }
 
   /**
-   * GraphQL → App model
+   * GraphQL → app model.
    */
   private mapTeam(
     team: TeamGraphQL,
   ): Team {
     return {
       id: team.id,
-
       trainerId: team.trainer_id,
-
       name: team.name,
-
       pokemonIds: team.pokemon_ids,
-
       createdAt: team.created_at,
     };
   }
